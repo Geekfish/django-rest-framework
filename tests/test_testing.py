@@ -222,3 +222,11 @@ class TestAPIRequestFactory(TestCase):
         self.assertEqual(dict(request.GET), {'demo': ['test']})
         request = factory.get('/view/', {'demo': 'test'})
         self.assertEqual(dict(request.GET), {'demo': ['test']})
+
+    def test_request_factory_unicode_url_arguments(self):
+        """
+        Regression test for #1891
+        """
+        factory = APIRequestFactory()
+        request = factory.get(b'/view/?q=%E2%85%AF%E2%84%A1%E2%84%A0%CF%8D%E2%83%8E%CF%8B')
+        self.assertEqual(dict(request.GET), {u'q': [u'\u216f\u2121\u2120\u03cd\u20ce\u03cb']})

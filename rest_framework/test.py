@@ -80,8 +80,10 @@ class APIRequestFactory(DjangoRequestFactory):
         }
         # Fix to support old behavior where you have the arguments in the url
         # See #1461
-        if not data and '?' in path:
-            r['QUERY_STRING'] = path.split('?')[1]
+        QUERY_CHAR = type(path)('?')
+        if not data and QUERY_CHAR in path:
+            # Splitting a str with a unicode character would convert everything to unicode.
+            r['QUERY_STRING'] = path.split(QUERY_CHAR)[1]
         r.update(extra)
         return self.generic('GET', path, **r)
 
